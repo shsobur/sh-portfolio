@@ -1,0 +1,157 @@
+/* ============== CONTAINER & BACKGROUND ============== */
+.background-container {
+  position: fixed;
+  inset: 0;
+  z-index: -10;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  pointer-events: none;
+  background: linear-gradient(
+    to bottom right,
+    #e3f2fd 0%,
+    #e3f2fd 20%,
+    #fef8f0 100%
+  );
+}
+
+.bg-orb {
+  position: absolute;
+  width: 72vw;
+  height: 72vw;
+  border-radius: 50%;
+  filter: blur(96px);
+}
+
+.top-orb {
+  top: -12%;
+  right: -10%;
+  background: linear-gradient(
+    to top right,
+    rgba(179, 217, 242, 0.25),
+    rgba(197, 224, 245, 0.15)
+  );
+}
+
+.bottom-orb {
+  bottom: -14%;
+  left: -12%;
+  background: linear-gradient(
+    to top right,
+    rgba(245, 225, 206, 0.2),
+    rgba(252, 233, 217, 0.1)
+  );
+}
+
+.bg-noise {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(
+      circle at 50% 20%,
+      rgba(255, 255, 255, 0.35),
+      transparent 36%
+    ),
+    radial-gradient(
+      circle at 18% 30%,
+      rgba(255, 255, 255, 0.18),
+      transparent 18%
+    ),
+    radial-gradient(
+      circle at 82% 68%,
+      rgba(255, 255, 255, 0.16),
+      transparent 22%
+    );
+}
+
+/* ============== WATER DROPLET ============== */
+.water-droplet-3d {
+  position: absolute;
+  transform-origin: center;
+  cursor: grab;
+  pointer-events: auto;
+  border: 1px solid rgba(100, 150, 190, 0.45);
+  box-shadow:
+    0 8px 18px rgba(60, 80, 110, 0.15),
+    inset 0 2px 4px rgba(255, 255, 255, 0.45);
+  will-change: transform, width, height;
+  background: transparent;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: none;
+  border-radius: 51% 49% 48% 52% / 62% 44% 56% 38%;
+  transition:
+    width 0.25s ease,
+    height 0.25s ease;
+}
+
+.water-droplet-3d.interactive:active {
+  cursor: grabbing;
+}
+
+/* --- INNER PARTS --- */
+.drop-core {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(
+    circle at 30% 25%,
+    rgba(160, 200, 230, 0.25) 0%,
+    rgba(255, 255, 255, 0.06) 50%,
+    transparent 70%
+  );
+  box-shadow: inset 0 0 8px rgba(255, 255, 255, 0.4);
+}
+
+.drop-rim {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0) 40%,
+    rgba(140, 180, 210, 0.55) 68%,
+    rgba(255, 255, 255, 0) 92%
+  );
+  mix-blend-mode: screen;
+  opacity: 0.8;
+}
+
+.drop-highlight {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.95);
+  mix-blend-mode: screen;
+  filter: blur(0.5px);
+}
+
+.drop-highlight-1 {
+  width: 25%;
+  height: 12%;
+  top: 14%;
+  left: 18%;
+  transform: rotate(-18deg);
+  opacity: 0.95;
+}
+
+.drop-highlight-2 {
+  width: 8%;
+  height: 6%;
+  top: 28%;
+  right: 24%;
+  opacity: 0.7;
+  background: rgba(220, 235, 250, 0.8);
+}
+
+.drop-caustic {
+  position: absolute;
+  inset: 12% 9% 10% 9%;
+  border-radius: inherit;
+  background: radial-gradient(
+    circle at 50% 70%,
+    rgba(100, 150, 200, 0.15),
+    transparent 55%
+  );
+  filter: blur(3px);
+  opacity: 0.65;
+}
