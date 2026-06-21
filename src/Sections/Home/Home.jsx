@@ -1,134 +1,130 @@
+import { useRef } from "react";
 import { motion } from "framer-motion";
+import { FaRegEnvelope, FaDownload, FaReact, FaNodeJs } from "react-icons/fa";
+import { SiMongodb, SiExpress } from "react-icons/si";
+import "./Home.css";
 
 const Home = () => {
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.12,
-        delayChildren: 0.2,
-      },
-    },
-  };
-
-  const itemVariants = {
-    hidden: {
-      opacity: 0,
-      y: 20,
-    },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.8,
-        ease: [0.16, 1, 0.3, 1],
-      },
-    },
-  };
+  const containerRef = useRef(null);
 
   return (
-    <section className="relative h-screen w-full max-w-[1536px] mx-auto flex items-center px-6 sm:px-12 md:px-16 lg:px-20 overflow-hidden">
-      {/* Soft Light */}
-      <div className="absolute left-0 top-[20%] w-[40vw] h-[40vw] bg-[#9FA1FF]/20 blur-[100px] rounded-full pointer-events-none -z-10" />
+    <div className="home-viewport-container pointer-events-auto">
+      {/* 
+        SVG Displacement Filter to create physical liquid refraction.
+        This bends and warps elements/text when hovered.
+      */}
+      <svg style={{ width: 0, height: 0, position: "absolute" }}>
+        <defs>
+          <filter id="liquid-warp">
+            <feTurbulence
+              type="fractalNoise"
+              baseFrequency="0.02"
+              numOctaves="2"
+              result="noise"
+            />
+            <feDisplacementMap
+              in="SourceGraphic"
+              in2="noise"
+              scale="15"
+              xChannelSelector="R"
+              yChannelSelector="G"
+            />
+          </filter>
+        </defs>
+      </svg>
 
-      <motion.div
-        variants={containerVariants}
-        initial="hidden"
-        animate="visible"
-        className="max-w-4xl"
-      >
-        {/* Badge */}
+      {/* Premium Periwinkle-Satin Glass Container (Upscaled) */}
+      <div className="premium-periwinkle-card" ref={containerRef}>
+        {/* Soft internal rim glares */}
+        <div className="card-rim-light" />
+        <div className="card-surface-shimmer" />
+
+        {/* 
+          DRAGGABLE CRYSTAL WATER DROPLET
+          Features complex 3D refractive properties and simulated caustic light focus
+        */}
         <motion.div
-          variants={itemVariants}
-          animate={{
-            y: [0, -6, 0],
-          }}
-          transition={{
-            duration: 5,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
-          className="mb-8"
+          drag
+          dragConstraints={containerRef}
+          dragElastic={0.05}
+          dragMomentum={true}
+          whileDrag={{ scale: 1.05, cursor: "grabbing" }}
+          className="crystal-water-orb"
+          title="Drag me over the text to see refraction!"
         >
-          <span className="inline-flex items-center rounded-full border border-white/50 bg-white/40 px-5 py-2 text-xs font-semibold text-slate-700 backdrop-blur-md">
-            Building • Learning • Improving
-          </span>
+          {/* Focused light spot inside the droplet shadow (Caustics simulation) */}
+          <div className="droplet-caustic-light" />
+
+          {/* Core Specular light source reflection (Top-Left) */}
+          <div className="specular-glare-point" />
+
+          {/* Secondary crescent bounce light (Bottom-Right) */}
+          <div className="bounce-light-rim" />
         </motion.div>
 
-        {/* Name */}
-        <motion.h2
-          variants={itemVariants}
-          className="text-4xl sm:text-6xl lg:text-[5rem] font-black tracking-[-0.05em] text-black leading-none"
-        >
-          SOBUR HOSSEN
-        </motion.h2>
+        {/* Scaled-up Home Text Content */}
+        <div className="expanded-text-content select-none">
+          <div className="periwinkle-tag">
+            <span className="tag-pulse-core" />
+            Active Portfolio
+          </div>
 
-        {/* Main Heading */}
-        <motion.h1
-          variants={itemVariants}
-          className="mt-4 text-4xl sm:text-6xl lg:text-[5.5rem] font-black leading-[0.95] tracking-tight animated-gradient-text-dark"
-        >
-          Building Modern
-          <br />
-          Web Experiences
-        </motion.h1>
+          <h1 className="editorial-main-title">
+            MERN Stack <br />
+            <span className="title-chromatic-accent">Developer.</span>
+          </h1>
 
-        {/* Skills */}
-        <motion.div
-          variants={itemVariants}
-          className="mt-6 flex flex-wrap gap-3"
-        >
-          {["React", "JavaScript", "Tailwind CSS", "MERN"].map((skill) => (
-            <span
-              key={skill}
-              className="rounded-full border border-white/50 bg-white/40 px-4 py-2 text-sm font-medium text-slate-700 backdrop-blur-md"
-            >
-              {skill}
-            </span>
-          ))}
-        </motion.div>
+          <p className="editorial-description">
+            Learning by building, debugging, and shipping real projects.
+            Everything is fun until the bugs arrive{" "}
+            <span className="skull-emoji">💀</span> 0_0
+          </p>
 
-        {/* Description */}
-        <motion.p
-          variants={itemVariants}
-          className="mt-8 max-w-2xl text-base sm:text-lg text-slate-600 leading-relaxed"
-        >
-          I build responsive and interactive web applications using React,
-          JavaScript, and modern web technologies. My focus is creating clean,
-          user-friendly experiences while continuously learning through real
-          projects.
-        </motion.p>
+          {/* Core Tech Stack Section */}
+          <div className="editorial-stack-section">
+            <span className="editorial-section-label">Core Competencies</span>
+            <div className="editorial-stack-grid">
+              {/* React */}
+              <div className="periwinkle-tech-pill">
+                <FaReact className="pill-icon spin-react-icon" />
+                <span>React.js</span>
+              </div>
 
-        {/* Buttons */}
-        <motion.div
-          variants={itemVariants}
-          className="mt-10 flex flex-wrap gap-4"
-        >
-          <a
-            href="#projects"
-            className="inline-flex items-center justify-center rounded-full bg-[#9FA1FF] px-7 py-3 text-sm font-semibold text-white shadow-[0_10px_30px_rgba(159,161,255,0.25)] transition-all duration-300 hover:-translate-y-1 hover:bg-[#8e90f0]"
-          >
-            View Projects
-          </a>
+              {/* Node */}
+              <div className="periwinkle-tech-pill">
+                <FaNodeJs className="pill-icon node-icon" />
+                <span>Node.js</span>
+              </div>
 
-          <a
-            href="/resume.pdf"
-            download
-            className="inline-flex items-center justify-center rounded-full border border-white/70 bg-white/60 px-7 py-3 text-sm font-semibold text-slate-700 backdrop-blur-md transition-all duration-300 hover:bg-white/90"
-          >
-            Download CV
-          </a>
+              {/* Express */}
+              <div className="periwinkle-tech-pill">
+                <SiExpress className="pill-icon express-icon" />
+                <span>Express</span>
+              </div>
 
-          <a
-            href="#contact"
-            className="inline-flex items-center justify-center rounded-full border border-slate-300 px-7 py-3 text-sm font-semibold text-slate-700 transition-all duration-300 hover:bg-white/50"
-          >
-            Contact Me
-          </a>
-        </motion.div>
-      </motion.div>
-    </section>
+              {/* MongoDB */}
+              <div className="periwinkle-tech-pill">
+                <SiMongodb className="pill-icon mongo-icon" />
+                <span>MongoDB</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Action Button Controls */}
+        <div className="editorial-actions-row">
+          <button className="editorial-action-btn btn-periwinkle-primary">
+            <FaRegEnvelope className="btn-icon" />
+            <span>CONTACT ME</span>
+          </button>
+
+          <button className="editorial-action-btn btn-periwinkle-secondary">
+            <FaDownload className="btn-icon" />
+            <span>DOWNLOAD CV / RESUME</span>
+          </button>
+        </div>
+      </div>
+    </div>
   );
 };
 

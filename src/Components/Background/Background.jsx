@@ -1,302 +1,154 @@
-import { useState, useRef, useCallback, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useEffect, useState } from "react";
 import "./Background.css";
 
-// ------------------- useMediaQuery (unchanged) -------------------
-const useMediaQuery = (query) => {
-  const [matches, setMatches] = useState(() => {
-    if (typeof window !== "undefined") return window.matchMedia(query).matches;
-    return false;
-  });
-
-  useEffect(() => {
-    const mql = window.matchMedia(query);
-    const handler = (e) => setMatches(e.matches);
-    mql.addEventListener("change", handler);
-    return () => mql.removeEventListener("change", handler);
-  }, [query]);
-
-  return matches;
-};
-
-// ------------------- Responsive droplet generator -------------------
-const generateDropletsForWidth = (width) => {
-  // Determine total droplets and size distribution based on screen width
-  let largeCount, mediumCount, smallCount;
-
-  if (width <= 374) {
-    largeCount = 2;
-    mediumCount = 3;
-    smallCount = 4;
-  } else if (width <= 424) {
-    largeCount = 2;
-    mediumCount = 4;
-    smallCount = 6;
-  } else if (width <= 767) {
-    largeCount = 3;
-    mediumCount = 5;
-    smallCount = 8;
-  } else if (width <= 1023) {
-    largeCount = 3;
-    mediumCount = 7;
-    smallCount = 10;
-  } else if (width <= 1439) {
-    largeCount = 4;
-    mediumCount = 8;
-    smallCount = 12;
-  } else if (width <= 1919) {
-    largeCount = 4;
-    mediumCount = 10;
-    smallCount = 14;
-  } else {
-    largeCount = 5;
-    mediumCount = 12;
-    smallCount = 15;
-  }
-
-  // Size ranges in vw (% of viewport width)
-  const largeSize = (min, max) =>
-    Math.floor((Math.random() * (max - min) + min) * width) / 100;
-  const mediumSize = (min, max) =>
-    Math.floor((Math.random() * (max - min) + min) * width) / 100;
-  const smallSize = (min, max) =>
-    Math.floor((Math.random() * (max - min) + min) * width) / 100;
-
-  const droplets = [];
-  let id = 1;
-
-  const addDrops = (count, sizeFn) => {
-    for (let i = 0; i < count; i++) {
-      droplets.push({
-        id: id++,
-        top: "0%", // will be set after placement
-        left: "0%",
-        size: sizeFn(),
-        rot: Math.floor(Math.random() * 30 - 15),
-        blur: Math.random() * 0.2,
-      });
-    }
-  };
-
-  // Generate droplets with size classes
-  addDrops(largeCount, () => largeSize(5, 7));
-  addDrops(mediumCount, () => mediumSize(2.5, 4.5));
-  addDrops(smallCount, () => smallSize(1, 2));
-
-  // Randomise order so sizes are mixed
-  droplets.sort(() => Math.random() - 0.5);
-  // Reassign ids after shuffling to keep them sequential
-  droplets.forEach((d, idx) => (d.id = idx + 1));
-
-  // ---- Collision‑free placement (using pixel centres) ----
-  const placed = [];
-  const viewW = width;
-  const viewH = (width * 9) / 16; // assume 16:9 aspect ratio for placement
-  const getPixelCenter = (drop) => ({
-    x: (parseFloat(drop.left) / 100) * viewW,
-    y: (parseFloat(drop.top) / 100) * viewH,
-  });
-
-  const maxAttempts = 60;
-  for (const drop of droplets) {
-    let placedSuccess = false;
-    for (let attempt = 0; attempt < maxAttempts; attempt++) {
-      const top = Math.floor(Math.random() * 88) + 6; // 6‑94% to keep away from edges
-      const left = Math.floor(Math.random() * 88) + 6;
-      drop.top = `${top}%`;
-      drop.left = `${left}%`;
-
-      const cCenter = getPixelCenter(drop);
-      const cRadius = drop.size / 2;
-      let overlap = false;
-      for (const p of placed) {
-        const pCenter = getPixelCenter(p);
-        const pRadius = p.size / 2;
-        const dist = Math.hypot(cCenter.x - pCenter.x, cCenter.y - pCenter.y);
-        if (dist < (cRadius + pRadius) * 0.8) {
-          overlap = true;
-          break;
-        }
-      }
-      if (!overlap) {
-        placed.push(drop);
-        placedSuccess = true;
-        break;
-      }
-    }
-    // If still not placed, force a random spot (rare)
-    if (!placedSuccess) {
-      drop.top = `${Math.floor(Math.random() * 88) + 6}%`;
-      drop.left = `${Math.floor(Math.random() * 88) + 6}%`;
-      placed.push(drop);
-    }
-  }
-
-  return placed;
-};
-
-// ------------------- Merge helpers -------------------
-const MAX_DROP_SIZE = (width) => width * 0.08; // 8% of viewport width
-const MERGE_DISTANCE_FACTOR = 0.85;
-
-const mergeSize = (size1, size2, maxSize) => {
-  const area1 = Math.PI * Math.pow(size1 / 2, 2);
-  const area2 = Math.PI * Math.pow(size2 / 2, 2);
-  const totalArea = area1 + area2;
-  const newRadius = Math.sqrt(totalArea / Math.PI);
-  return Math.min(Math.round(newRadius * 2), maxSize);
-};
-
-// ------------------- Component -------------------
 const Background = () => {
-  const isDesktop = useMediaQuery("(min-width: 1025px)");
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
 
-  // Generate responsive droplets once on mount
-  const [droplets, setDroplets] = useState(() => {
-    if (typeof window === "undefined") return [];
-    const width = window.innerWidth;
-    return generateDropletsForWidth(width).map((d) => ({
-      ...d,
-      px: (parseFloat(d.left) / 100) * width,
-      py: (parseFloat(d.top) / 100) * ((width * 9) / 16), // height based on 16:9 ratio
-      mergingOut: false,
-    }));
-  });
-
-  const containerRef = useRef(null);
-  const dragState = useRef({
-    draggingId: null,
-    offsetX: 0,
-    offsetY: 0,
-  });
-
-  // Clean up merged-out droplets
   useEffect(() => {
-    const timer = setInterval(() => {
-      setDroplets((prev) => prev.filter((d) => !d.mergingOut));
-    }, 300);
-    return () => clearInterval(timer);
+    const handleMouseMove = (e) => {
+      // Normalize coordinate values between -0.5 and 0.5
+      const x = e.clientX / window.innerWidth - 0.5;
+      const y = e.clientY / window.innerHeight - 0.5;
+      setMousePos({ x, y });
+    };
+
+    window.addEventListener("mousemove", handleMouseMove);
+    return () => window.removeEventListener("mousemove", handleMouseMove);
   }, []);
 
-  const currentMaxSize =
-    typeof window !== "undefined" ? MAX_DROP_SIZE(window.innerWidth) : 200;
-
-  // ----- Pointer handlers (only active on desktop) -----
-  const handlePointerDown = useCallback(
-    (e, dropId) => {
-      if (!isDesktop) return;
-      e.stopPropagation();
-      const drop = droplets.find((d) => d.id === dropId);
-      if (!drop || drop.mergingOut) return;
-
-      const rect = containerRef.current.getBoundingClientRect();
-      const clientX = e.clientX - rect.left;
-      const clientY = e.clientY - rect.top;
-
-      dragState.current = {
-        draggingId: dropId,
-        offsetX: clientX - drop.px,
-        offsetY: clientY - drop.py,
-      };
-
-      containerRef.current.setPointerCapture(e.pointerId);
-    },
-    [droplets, isDesktop],
-  );
-
-  const handlePointerMove = useCallback(
-    (e) => {
-      if (!isDesktop) return;
-      const { draggingId, offsetX, offsetY } = dragState.current;
-      if (draggingId === null) return;
-
-      const rect = containerRef.current.getBoundingClientRect();
-      const clientX = e.clientX - rect.left;
-      const clientY = e.clientY - rect.top;
-      const newPx = clientX - offsetX;
-      const newPy = clientY - offsetY;
-
-      setDroplets((prev) => {
-        const dragged = prev.find((d) => d.id === draggingId);
-        if (!dragged) return prev;
-
-        const updated = prev.map((drop) => {
-          if (drop.id === draggingId || drop.mergingOut) return drop;
-          const dx = newPx - drop.px;
-          const dy = newPy - drop.py;
-          const dist = Math.hypot(dx, dy);
-          const minDist =
-            ((dragged.size + drop.size) / 2) * MERGE_DISTANCE_FACTOR;
-          if (dist < minDist) {
-            // Merge instantly
-            const newSize = mergeSize(dragged.size, drop.size, currentMaxSize);
-            dragged.size = newSize;
-            drop.mergingOut = true;
-          }
-          return drop;
-        });
-
-        return updated.map((drop) =>
-          drop.id === draggingId ? { ...drop, px: newPx, py: newPy } : drop,
-        );
-      });
-    },
-    [isDesktop, currentMaxSize],
-  );
-
-  const handlePointerUp = useCallback(() => {
-    if (!isDesktop) return;
-    dragState.current.draggingId = null;
-  }, [isDesktop]);
+  // Multi-tiered parallax speeds for deep visual immersion
+  const layerGrid = {
+    transform: `translate(${mousePos.x * -10}px, ${mousePos.y * -10}px)`,
+  };
+  const layerCurves = {
+    transform: `translate(${mousePos.x * -25}px, ${mousePos.y * -25}px)`,
+  };
+  const layerDroplets = {
+    transform: `translate(${mousePos.x * -50}px, ${mousePos.y * -50}px)`,
+  };
 
   return (
-    <div
-      ref={containerRef}
-      className="background-container"
-      onPointerMove={handlePointerMove}
-      onPointerUp={handlePointerUp}
-      style={{ touchAction: isDesktop ? "none" : "auto" }}
-    >
-      <div className="bg-orb top-orb" />
-      <div className="bg-orb bottom-orb" />
-      <div className="bg-noise" />
+    <div className="parallax-bg-container">
+      {/* LAYER 1: Base Tech Grid */}
+      <div className="parallax-layer grid-layer" style={layerGrid} />
 
-      <AnimatePresence>
-        {droplets.map((drop) => {
-          const isSmall = drop.size < 20;
-          return (
-            <motion.div
-              key={drop.id}
-              className={`water-droplet-3d ${isDesktop ? "interactive" : ""}`}
-              style={{
-                left: drop.px - drop.size / 2,
-                top: drop.py - drop.size / 2,
-                width: drop.size,
-                height: drop.size * (isSmall ? 0.88 : 0.96),
-                opacity: isSmall ? 0.72 : 1,
-                filter: `blur(${drop.blur}px)`,
-                pointerEvents: isDesktop ? "auto" : "none",
-              }}
-              onPointerDown={(e) => handlePointerDown(e, drop.id)}
-              initial={drop.mergingOut ? { scale: 1, opacity: 1 } : false}
-              animate={
-                drop.mergingOut
-                  ? { scale: 0, opacity: 0, transition: { duration: 0.25 } }
-                  : { scale: 1, opacity: 1 }
-              }
-              exit={{ scale: 0, opacity: 0, transition: { duration: 0.25 } }}
-              whileHover={isDesktop ? { scale: 1.06 } : {}}
-              whileTap={isDesktop ? { cursor: "grabbing" } : {}}
-            >
-              <div className="drop-core" />
-              <div className="drop-rim" />
-              <div className="drop-highlight drop-highlight-1" />
-              <div className="drop-highlight drop-highlight-2" />
-              <div className="drop-caustic" />
-            </motion.div>
-          );
-        })}
-      </AnimatePresence>
+      {/* LAYER 2: Vertical Curved Graph / Fluid Gradient Tracks */}
+      <div className="parallax-layer curves-layer" style={layerCurves}>
+        <svg
+          className="vertical-curves-svg"
+          viewBox="0 0 1440 900"
+          preserveAspectRatio="none"
+        >
+          <defs>
+            <linearGradient id="curveGrad1" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stopColor="#3b82f6" stopOpacity="0.8" />
+              <stop offset="50%" stopColor="#8b5cf6" stopOpacity="0.6" />
+              <stop offset="100%" stopColor="#ec4899" stopOpacity="0.8" />
+            </linearGradient>
+            <linearGradient id="curveGrad2" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stopColor="#06b6d4" stopOpacity="0.6" />
+              <stop offset="60%" stopColor="#10b981" stopOpacity="0.5" />
+              <stop offset="100%" stopColor="#f59e0b" stopOpacity="0.7" />
+            </linearGradient>
+            <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+              <feGaussianBlur stdDeviation="8" result="blur" />
+              <feComposite in="SourceGraphic" in2="blur" operator="over" />
+            </filter>
+          </defs>
+
+          {/* Primary Vertical Wave 1 */}
+          <path
+            d="M 250 0 C 400 250, 100 500, 350 750 C 450 850, 200 950, 300 1080"
+            fill="none"
+            stroke="url(#curveGrad1)"
+            strokeWidth="12"
+            strokeLinecap="round"
+            filter="url(#glow)"
+            className="animated-path-1"
+          />
+
+          {/* Secondary Vertical Wave 2 (Crosses over Wave 1) */}
+          <path
+            d="M 1150 0 C 950 200, 1250 450, 1000 700 C 850 850, 1100 950, 1050 1080"
+            fill="none"
+            stroke="url(#curveGrad2)"
+            strokeWidth="8"
+            strokeLinecap="round"
+            filter="url(#glow)"
+            className="animated-path-2"
+          />
+        </svg>
+
+        {/* Ambient Blur Behind Curves */}
+        <div
+          className="ambient-glow glow-blue"
+          style={{ top: "20%", left: "15%" }}
+        />
+        <div
+          className="ambient-glow glow-pink"
+          style={{ bottom: "25%", right: "15%" }}
+        />
+      </div>
+
+      {/* LAYER 3: 3D Crystal Water Droplets (Interacts with the curves below) */}
+      <div className="parallax-layer droplets-layer" style={layerDroplets}>
+        {/* Large Lens Droplet: Positioned over Curve 1 to simulate magnification refraction */}
+        <div
+          className="crystal-droplet lens-droplet-1"
+          style={{ top: "35%", left: "18%" }}
+        >
+          <div className="droplet-specular-highlight" />
+        </div>
+
+        {/* Large Lens Droplet: Positioned over Curve 2 */}
+        <div
+          className="crystal-droplet lens-droplet-2"
+          style={{ top: "50%", right: "16%" }}
+        >
+          <div className="droplet-specular-highlight" />
+        </div>
+
+        {/* Supporting Medium & Large Fluid Droplets */}
+        <div
+          className="crystal-droplet drop-giant"
+          style={{ bottom: "10%", left: "8%" }}
+        >
+          <div className="droplet-specular-highlight" />
+        </div>
+
+        <div
+          className="crystal-droplet drop-wide"
+          style={{ top: "10%", right: "25%" }}
+        >
+          <div className="droplet-specular-highlight" />
+        </div>
+
+        <div
+          className="crystal-droplet drop-medium"
+          style={{ top: "72%", left: "42%" }}
+        >
+          <div className="droplet-specular-highlight" />
+        </div>
+
+        <div
+          className="crystal-droplet drop-small"
+          style={{ top: "20%", left: "40%" }}
+        >
+          <div className="droplet-specular-highlight" />
+        </div>
+
+        <div
+          className="crystal-droplet drop-small"
+          style={{ bottom: "40%", left: "10%" }}
+        >
+          <div className="droplet-specular-highlight" />
+        </div>
+
+        <div
+          className="crystal-droplet drop-micro"
+          style={{ top: "45%", right: "35%" }}
+        ></div>
+      </div>
     </div>
   );
 };

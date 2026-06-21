@@ -1,157 +1,202 @@
-/* ============== CONTAINER & BACKGROUND ============== */
-.background-container {
+.parallax-bg-container {
   position: fixed;
-  inset: 0;
-  z-index: -10;
-  height: 100%;
+  top: 0;
+  left: 0;
   width: 100%;
+  height: 100%;
+  z-index: 1;
   overflow: hidden;
   pointer-events: none;
-  background: linear-gradient(
-    to bottom right,
-    #e3f2fd 0%,
-    #e3f2fd 20%,
-    #fef8f0 100%
-  );
+  background-color: #e4e9ed;
 }
 
-.bg-orb {
+.parallax-layer {
   position: absolute;
-  width: 72vw;
-  height: 72vw;
-  border-radius: 50%;
-  filter: blur(96px);
+  inset: -12%; /* Generous margin prevents boundary cutoff during motion translation */
+  width: 124%;
+  height: 124%;
+  transition: transform 0.25s cubic-bezier(0.1, 0.45, 0.1, 1);
+  pointer-events: none;
 }
 
-.top-orb {
-  top: -12%;
-  right: -10%;
-  background: linear-gradient(
-    to top right,
-    rgba(179, 217, 242, 0.25),
-    rgba(197, 224, 245, 0.15)
-  );
+/* Layer 1: Core Alignment Technical Grid */
+.grid-layer {
+  background-image:
+    linear-gradient(to right, rgba(148, 163, 184, 0.27) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(148, 163, 184, 0.27) 1px, transparent 1px);
+  background-size: 60px 60px;
 }
 
-.bottom-orb {
-  bottom: -14%;
-  left: -12%;
-  background: linear-gradient(
-    to top right,
-    rgba(245, 225, 206, 0.2),
-    rgba(252, 233, 217, 0.1)
-  );
+/* Layer 2: Glowing Vertical Curves */
+.curves-layer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.bg-noise {
-  position: absolute;
-  inset: 0;
-  background:
-    radial-gradient(
-      circle at 50% 20%,
-      rgba(255, 255, 255, 0.35),
-      transparent 36%
-    ),
-    radial-gradient(
-      circle at 18% 30%,
-      rgba(255, 255, 255, 0.18),
-      transparent 18%
-    ),
-    radial-gradient(
-      circle at 82% 68%,
-      rgba(255, 255, 255, 0.16),
-      transparent 22%
-    );
-}
-
-/* ============== WATER DROPLET ============== */
-.water-droplet-3d {
-  position: absolute;
-  transform-origin: center;
-  cursor: grab;
-  pointer-events: auto;
-  border: 1px solid rgba(100, 150, 190, 0.45);
-  box-shadow:
-    0 8px 18px rgba(60, 80, 110, 0.15),
-    inset 0 2px 4px rgba(255, 255, 255, 0.45);
-  will-change: transform, width, height;
-  background: transparent;
-  user-select: none;
-  -webkit-user-select: none;
-  touch-action: none;
-  border-radius: 51% 49% 48% 52% / 62% 44% 56% 38%;
-  transition:
-    width 0.25s ease,
-    height 0.25s ease;
-}
-
-.water-droplet-3d.interactive:active {
-  cursor: grabbing;
-}
-
-/* --- INNER PARTS --- */
-.drop-core {
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  background: radial-gradient(
-    circle at 30% 25%,
-    rgba(160, 200, 230, 0.25) 0%,
-    rgba(255, 255, 255, 0.06) 50%,
-    transparent 70%
-  );
-  box-shadow: inset 0 0 8px rgba(255, 255, 255, 0.4);
-}
-
-.drop-rim {
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  background: linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 0) 40%,
-    rgba(140, 180, 210, 0.55) 68%,
-    rgba(255, 255, 255, 0) 92%
-  );
-  mix-blend-mode: screen;
-  opacity: 0.8;
-}
-
-.drop-highlight {
-  position: absolute;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.95);
-  mix-blend-mode: screen;
-  filter: blur(0.5px);
-}
-
-.drop-highlight-1 {
-  width: 25%;
-  height: 12%;
-  top: 14%;
-  left: 18%;
-  transform: rotate(-18deg);
-  opacity: 0.95;
-}
-
-.drop-highlight-2 {
-  width: 8%;
-  height: 6%;
-  top: 28%;
-  right: 24%;
-  opacity: 0.7;
-  background: rgba(220, 235, 250, 0.8);
-}
-
-.drop-caustic {
-  position: absolute;
-  inset: 12% 9% 10% 9%;
-  border-radius: inherit;
-  background: radial-gradient(
-    circle at 50% 70%,
-    rgba(100, 150, 200, 0.15),
-    transparent 55%
-  );
-  filter: blur(3px);
+.vertical-curves-svg {
+  width: 100%;
+  height: 100%;
   opacity: 0.65;
+}
+
+/* 
+  SEAMLESS SNAKE FLOW ANIMATION LOGIC:
+  Wave 1 Pattern: 600px dash, 300px gap (900px total loop period).
+  Animating the offset by exactly 900px ensures a seamless, infinite loop.
+*/
+.animated-path-1 {
+  stroke-dasharray: 600, 300;
+  animation: snakeFlowOne 10s linear infinite;
+}
+
+/* 
+  Wave 2 Pattern: 500px dash, 250px gap (750px total loop period).
+  Runs in reverse direction for dynamic variety.
+*/
+.animated-path-2 {
+  stroke-dasharray: 500, 250;
+  animation: snakeFlowTwo 14s linear infinite;
+}
+
+@keyframes snakeFlowOne {
+  from {
+    stroke-dashoffset: 900;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes snakeFlowTwo {
+  from {
+    stroke-dashoffset: 0;
+  }
+  to {
+    stroke-dashoffset: 750;
+  }
+}
+
+/* Soft ambient lighting backing the curves */
+.ambient-glow {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(120px);
+  opacity: 0.35;
+}
+
+.glow-blue {
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(
+    circle,
+    rgba(59, 130, 246, 0.4) 0%,
+    transparent 75%
+  );
+}
+
+.glow-pink {
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(
+    circle,
+    rgba(236, 72, 153, 0.3) 0%,
+    transparent 75%
+  );
+}
+
+/* Layer 3: Crystal Clear Water Droplets */
+
+/* Core Droplet Physics: Highly transparent, sharp specularity, double shadow casting */
+.crystal-droplet {
+  position: absolute;
+  background: transparent;
+  backdrop-filter: blur(4px) saturate(135%) brightness(1.05);
+  -webkit-backdrop-filter: blur(4px) saturate(135%) brightness(1.05);
+  border-top: 1px solid rgba(255, 255, 255, 0.9);
+  border-left: 1px solid rgba(255, 255, 255, 0.9);
+  border-bottom: 1.5px solid rgba(255, 255, 255, 0.3);
+  border-right: 1.5px solid rgba(255, 255, 255, 0.3);
+
+  box-shadow: 
+    /* Soft ambient shadow below the drop */
+    0 25px 45px rgba(15, 23, 42, 0.08),
+    /* Deep focal shadow directly beneath the lens curve */ 0 8px 16px
+      rgba(15, 23, 42, 0.05),
+    /* Internal dark meniscus boundary shadow */ inset -4px -4px 8px
+      rgba(0, 0, 0, 0.06),
+    inset -1px -1px 2px rgba(0, 0, 0, 0.12),
+    /* Internal liquid volume glow */ inset 4px 4px 12px
+      rgba(255, 255, 255, 0.85);
+
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.15);
+}
+
+/* Sharp specular highlight simulating an overhead light source */
+.droplet-specular-highlight {
+  position: absolute;
+  top: 14%;
+  left: 14%;
+  width: 30%;
+  height: 30%;
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.95) 0%,
+    rgba(255, 255, 255, 0) 80%
+  );
+  border-radius: 50%;
+  transform: rotate(-45deg);
+  pointer-events: none;
+}
+
+/* SPECIFIC DROPLET SHAPES AND SIZES */
+
+/* Refractive Lens Droplet 1 (Large - positioned over primary curve) */
+.lens-droplet-1 {
+  width: 95px;
+  height: 85px;
+  border-radius: 44% 56% 62% 38% / 40% 48% 52% 60%;
+}
+
+/* Refractive Lens Droplet 2 (Large - positioned over secondary curve) */
+.lens-droplet-2 {
+  width: 80px;
+  height: 82px;
+  border-radius: 52% 48% 44% 56% / 46% 52% 48% 54%;
+}
+
+/* Giant Free Droplet */
+.drop-giant {
+  width: 110px;
+  height: 100px;
+  border-radius: 38% 62% 55% 45% / 42% 40% 60% 58%;
+}
+
+/* Elongated Wide Liquid Spill */
+.drop-wide {
+  width: 90px;
+  height: 65px;
+  border-radius: 60% 40% 48% 52% / 45% 55% 45% 55%;
+}
+
+.drop-medium {
+  width: 50px;
+  height: 48px;
+  border-radius: 47% 53% 50% 50% / 52% 48% 52% 48%;
+}
+
+.drop-small {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+}
+
+.drop-micro {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  box-shadow:
+    0 4px 8px rgba(15, 23, 42, 0.05),
+    inset -1px -1px 2px rgba(0, 0, 0, 0.05),
+    inset 1px 1px 3px rgba(255, 255, 255, 0.9);
 }

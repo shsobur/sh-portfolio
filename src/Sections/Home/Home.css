@@ -1,0 +1,355 @@
+/* Viewport layout aligning content on the left within a 1536px canvas */
+.home-viewport-container {
+  width: 100%;
+  height: 100vh;
+  max-width: 1536px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 15px;
+  box-sizing: border-box;
+}
+
+/* 
+  PREMIUM PERIWINKLE/LAVENDER-SATIN GLASS CONTAINER (Upscaled)
+  Designed with soft periwinkle tints to make clear water elements pop.
+*/
+.premium-periwinkle-card {
+  position: relative;
+  width: 100%;
+  max-width: 80%; /* Expansive layout footprint */
+  padding: 40px 25% 40px 50px; /* Spaciously proportioned */
+  box-sizing: border-box;
+  border-radius: 48px;
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+
+  overflow: hidden; /* Clears bounding limits for water orb */
+
+  /* Tinted Lavender/Periwinkle Satin Backing */
+  background: linear-gradient(
+    135deg,
+    rgb(230, 230, 250) 0%,
+    rgba(220, 224, 248, 0.077) 100%
+  );
+  backdrop-filter: blur(12px) saturate(135%) contrast(105%) brightness(1.02);
+  -webkit-backdrop-filter: blur(12px) saturate(135%) contrast(105%)
+    brightness(1.02);
+
+  /* Premium double-layered light boundary rims */
+  border-top: 1.5px solid rgb(255, 255, 255);
+  border-left: 1.5px solid rgba(255, 255, 255, 0.194);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.25);
+  border-right: 1px solid rgba(255, 255, 255, 0.25);
+
+  /* Soft, diffuse, high-fidelity drop-shadow */
+  box-shadow:
+    0 40px 100px rgba(15, 23, 42, 0.195),
+    0 15px 35px rgba(15, 23, 42, 0.187);
+}
+
+.card-rim-light {
+  position: absolute;
+  inset: 0;
+  border-radius: 46px;
+  background: radial-gradient(circle at 10% 10%, #ffffff15 0%, transparent 50%);
+  pointer-events: none;
+}
+
+.card-surface-shimmer {
+  position: absolute;
+  top: 1px;
+  left: 15%;
+  right: 15%;
+  height: 2px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    rgba(255, 255, 255, 0.9),
+    transparent
+  );
+  pointer-events: none;
+}
+
+/* 
+  3D CRYSTAL-CLEAR WATER ORB (Perfect Sphere Droplet)
+  Highly transparent water physical rendering.
+*/
+.crystal-water-orb {
+  position: absolute;
+  top: 140px;
+  right: 80px;
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  cursor: grab;
+  z-index: 10;
+  user-select: none;
+
+  /* Flawless optical clarity refraction filter */
+  background: transparent;
+  backdrop-filter: blur(5px) saturate(180%) contrast(125%) brightness(1.06);
+  -webkit-backdrop-filter: blur(5px) saturate(180%) contrast(125%)
+    brightness(1.06);
+
+  /* Double highlights on curved glass boundaries */
+  border-top: 1px solid rgba(255, 255, 255, 0.95);
+  border-left: 1px solid rgba(255, 255, 255, 0.95);
+  border-bottom: 1.5px solid rgba(255, 255, 255, 0.3);
+  border-right: 1.5px solid rgba(255, 255, 255, 0.3);
+
+  /* Physics shadows: Cast shadow + contact shadow + internal refraction shadows */
+  box-shadow:
+    0 35px 55px rgba(15, 23, 42, 0.071),
+    0 10px 20px rgba(15, 23, 42, 0.054),
+    inset -5px -5px 12px rgba(0, 0, 0, 0.05),
+    inset 5px 5px 12px rgba(255, 255, 255, 0.906),
+    inset -1px -1px 2px rgba(0, 0, 0, 0.17);
+}
+
+/* Simulated caustic focused light spot beneath clear water */
+.droplet-caustic-light {
+  position: absolute;
+  bottom: -5px;
+  right: -5px;
+  width: 40px;
+  height: 40px;
+  background-color: rgba(255, 255, 255, 0.568);
+  filter: blur(10px);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+/* Sharp Specular glare point (Light Reflection) */
+.specular-glare-point {
+  position: absolute;
+  top: 15%;
+  left: 15%;
+  width: 30%;
+  height: 30%;
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.944) 0%,
+    rgba(255, 255, 255, 0) 80%
+  );
+  border-radius: 50%;
+  transform: rotate(-45deg);
+  pointer-events: none;
+}
+
+/* Secondary internal bounce light on opposite edge */
+.bounce-light-rim {
+  position: absolute;
+  bottom: 8%;
+  right: 8%;
+  width: 40%;
+  height: 40%;
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.3) 0%,
+    rgba(255, 255, 255, 0) 70%
+  );
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+/* UPSCALED EDITORIAL TEXT CONTENT */
+.expanded-text-content {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.periwinkle-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 18px;
+  border-radius: 100px;
+  background: rgba(255, 255, 255, 0.786);
+  border: 1px solid rgba(255, 255, 255, 0.631);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #334155;
+  width: fit-content;
+  box-shadow: inset 1px 1px 1px rgba(255, 255, 255, 0.132);
+}
+
+.tag-pulse-core {
+  width: 6px;
+  height: 6px;
+  background-color: #3b82f6;
+  border-radius: 50%;
+  animation: pulsePulse 2s infinite;
+}
+
+/* Large, high-end widescreen title */
+.editorial-main-title {
+  font-size: 6rem; /* Commanding layout scale */
+  font-weight: 700;
+  line-height: 1.1;
+  color: #0f172a;
+  letter-spacing: -0.04em;
+  margin: 0;
+}
+
+.title-chromatic-accent {
+  background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.editorial-description {
+  font-size: 1.2rem; /* Perfectly readable */
+  line-height: 1.65;
+  color: #334155;
+  font-weight: 400;
+  max-width: 520px;
+  margin: 0;
+}
+
+.skull-emoji {
+  color: #475569;
+}
+
+/* Competencies Sections */
+.editorial-stack-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 12px;
+}
+
+.editorial-section-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #64748b;
+}
+
+.editorial-stack-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+@media (min-width: 540px) {
+  .editorial-stack-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.periwinkle-tech-pill {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 15px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.185);
+  border: 2px solid rgb(255, 255, 255);
+  font-size: 1rem;
+  font-weight: 600;
+  color: #1e293b;
+  box-shadow:
+    0 2px 4px rgba(0, 0, 0, 0.01),
+    inset 1px 1px 1px rgba(255, 255, 255, 0.8);
+}
+
+.pill-icon {
+  font-size: 1.6rem;
+}
+
+.spin-react-icon {
+  color: #00d8ff;
+  animation: spinReact 20s linear infinite;
+}
+
+.node-icon {
+  color: #539e43;
+}
+.express-icon {
+  color: #475569;
+}
+.mongo-icon {
+  color: #419e38;
+}
+
+@keyframes spinReact {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Responsive Action Buttons */
+.editorial-actions-row {
+  display: flex;
+  gap: 16px;
+  width: 100%;
+}
+
+.editorial-action-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 18px 28px;
+  border-radius: 18px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  outline: none;
+  border: none;
+  transition:
+    background-color 0.2s ease,
+    opacity 0.2s ease;
+}
+
+.btn-icon {
+  font-size: 1rem;
+  opacity: 0.85;
+}
+
+.btn-periwinkle-primary {
+  background-color: #0f172a;
+  color: #ffffff;
+}
+
+.btn-periwinkle-primary:hover {
+  background-color: #1e293b;
+}
+
+.btn-periwinkle-primary:active {
+  opacity: 0.85;
+}
+
+.btn-periwinkle-secondary {
+  background-color: rgba(255, 255, 255, 0.7);
+  color: #0f172a;
+  border: 1px solid rgba(15, 23, 42, 0.1);
+}
+
+.btn-periwinkle-secondary:hover {
+  background-color: rgba(255, 255, 255, 0.95);
+  border-color: rgba(15, 23, 42, 0.2);
+}
+
+.btn-periwinkle-secondary:active {
+  opacity: 0.85;
+}
+
+@keyframes pulsePulse {
+  0%,
+  100% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+}
