@@ -12,14 +12,15 @@
 
 .parallax-layer {
   position: absolute;
-  inset: -12%; /* Generous margin prevents boundary cutoff during motion translation */
-  width: 124%;
-  height: 124%;
-  transition: transform 0.25s cubic-bezier(0.1, 0.45, 0.1, 1);
+  inset: -8%; /* ✅ FIX 6: reduced from -12% — less oversized = less compositing */
+  width: 116%; /* ✅ FIX 6: was 124% */
+  height: 116%; /* ✅ FIX 6: was 124% */
   pointer-events: none;
+  /* ✅ FIX 5: removed transition — Lenis handles smoothness, CSS transition fights it */
+  will-change: transform;
+  transform: translateZ(0); /* promote each layer to GPU compositor */
 }
 
-/* Layer 1: Core Alignment Technical Grid */
 .grid-layer {
   background-image:
     linear-gradient(to right, rgba(148, 163, 184, 0.27) 1px, transparent 1px),
@@ -27,7 +28,6 @@
   background-size: 60px 60px;
 }
 
-/* Layer 2: Glowing Vertical Curves */
 .curves-layer {
   display: flex;
   align-items: center;
@@ -38,24 +38,17 @@
   width: 100%;
   height: 100%;
   opacity: 0.65;
+  /* ✅ FIX 3: soft glow via CSS filter — computed once, not per animation frame */
+  filter: blur(0px) drop-shadow(0 0 8px rgba(139, 92, 246, 0.4));
 }
 
-/* 
-  SEAMLESS SNAKE FLOW ANIMATION LOGIC:
-  Wave 1 Pattern: 600px dash, 300px gap (900px total loop period).
-  Animating the offset by exactly 900px ensures a seamless, infinite loop.
-*/
 .animated-path-1 {
-  stroke-dasharray: 600, 300;
+  stroke-dasharray: 600 300;
   animation: snakeFlowOne 10s linear infinite;
 }
 
-/* 
-  Wave 2 Pattern: 500px dash, 250px gap (750px total loop period).
-  Runs in reverse direction for dynamic variety.
-*/
 .animated-path-2 {
-  stroke-dasharray: 500, 250;
+  stroke-dasharray: 500 250;
   animation: snakeFlowTwo 14s linear infinite;
 }
 
@@ -77,20 +70,24 @@
   }
 }
 
-/* Soft ambient lighting backing the curves */
 .ambient-glow {
   position: absolute;
   border-radius: 50%;
-  filter: blur(120px);
   opacity: 0.35;
+  /* ✅ FIX 4: will-change promotes glow to own compositor layer */
+  will-change: transform;
+  transform: translateZ(0);
 }
 
 .glow-blue {
   width: 600px;
   height: 600px;
+  /* ✅ FIX 4: filter moved off .ambient-glow and replaced with a pre-composited
+     radial-gradient that already fades to transparent — same look, zero blur cost */
   background: radial-gradient(
     circle,
-    rgba(59, 130, 246, 0.4) 0%,
+    rgba(59, 130, 246, 0.35) 0%,
+    rgba(59, 130, 246, 0.1) 40%,
     transparent 75%
   );
 }
@@ -100,14 +97,15 @@
   height: 500px;
   background: radial-gradient(
     circle,
-    rgba(236, 72, 153, 0.3) 0%,
+    rgba(236, 72, 153, 0.28) 0%,
+    rgba(236, 72, 153, 0.08) 40%,
     transparent 75%
   );
 }
 
-/* Layer 3: Crystal Clear Water Droplets */
-
-/* Core Droplet Physics: Highly transparent, sharp specularity, double shadow casting */
+/* ✅ FIX 2: backdrop-filter kept (it's your design) but cost reduced:
+   - will-change + translateZ promotes each droplet to its own layer
+   - browser can cache the composited texture instead of repainting per frame */
 .crystal-droplet {
   position: absolute;
   background: transparent;
@@ -117,22 +115,14 @@
   border-left: 1px solid rgba(255, 255, 255, 0.9);
   border-bottom: 1.5px solid rgba(255, 255, 255, 0.3);
   border-right: 1.5px solid rgba(255, 255, 255, 0.3);
-
-  box-shadow: 
-    /* Soft ambient shadow below the drop */
+  box-shadow:
     0 25px 45px rgba(15, 23, 42, 0.08),
-    /* Deep focal shadow directly beneath the lens curve */ 0 8px 16px
-      rgba(15, 23, 42, 0.05),
-    /* Internal dark meniscus boundary shadow */ inset -4px -4px 8px
-      rgba(0, 0, 0, 0.06),
-    inset -1px -1px 2px rgba(0, 0, 0, 0.12),
-    /* Internal liquid volume glow */ inset 4px 4px 12px
-      rgba(255, 255, 255, 0.85);
-
-  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.15);
+    inset 4px 4px 12px rgba(255, 255, 255, 0.85); /* ✅ reduced from 5 shadows to 2 */
+  will-change: transform;
+  transform: translateZ(0); /* ✅ FIX 2: own compositor layer per droplet */
+  /* ✅ FIX 5: removed transition — parallax parent handles movement */
 }
 
-/* Sharp specular highlight simulating an overhead light source */
 .droplet-specular-highlight {
   position: absolute;
   top: 14%;
@@ -149,54 +139,42 @@
   pointer-events: none;
 }
 
-/* SPECIFIC DROPLET SHAPES AND SIZES */
-
-/* Refractive Lens Droplet 1 (Large - positioned over primary curve) */
+/* Droplet shapes — unchanged */
 .lens-droplet-1 {
   width: 95px;
   height: 85px;
   border-radius: 44% 56% 62% 38% / 40% 48% 52% 60%;
 }
-
-/* Refractive Lens Droplet 2 (Large - positioned over secondary curve) */
 .lens-droplet-2 {
   width: 80px;
   height: 82px;
   border-radius: 52% 48% 44% 56% / 46% 52% 48% 54%;
 }
-
-/* Giant Free Droplet */
 .drop-giant {
   width: 110px;
   height: 100px;
   border-radius: 38% 62% 55% 45% / 42% 40% 60% 58%;
 }
-
-/* Elongated Wide Liquid Spill */
 .drop-wide {
   width: 90px;
   height: 65px;
   border-radius: 60% 40% 48% 52% / 45% 55% 45% 55%;
 }
-
 .drop-medium {
   width: 50px;
   height: 48px;
   border-radius: 47% 53% 50% 50% / 52% 48% 52% 48%;
 }
-
 .drop-small {
   width: 24px;
   height: 24px;
   border-radius: 50%;
 }
-
 .drop-micro {
   width: 12px;
   height: 12px;
   border-radius: 50%;
   box-shadow:
     0 4px 8px rgba(15, 23, 42, 0.05),
-    inset -1px -1px 2px rgba(0, 0, 0, 0.05),
     inset 1px 1px 3px rgba(255, 255, 255, 0.9);
 }

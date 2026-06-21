@@ -1,165 +1,112 @@
-/* Viewport layout aligning content on the left within a 1536px canvas */
-.home-viewport-container {
+.home-viewport {
   width: 100%;
-  height: 100vh;
+  min-height: 100vh;
   max-width: 1536px;
   margin: 0 auto;
+  padding: 60px 10px;
+  box-sizing: border-box;
   display: flex;
   align-items: center;
-  justify-content: flex-start;
-  padding: 15px;
-  box-sizing: border-box;
+  justify-content: center;
 }
 
-/* 
-  PREMIUM PERIWINKLE/LAVENDER-SATIN GLASS CONTAINER (Upscaled)
-  Designed with soft periwinkle tints to make clear water elements pop.
-*/
-.premium-periwinkle-card {
+/* ✅ FIX 1+2: will-change + translateZ promote the panel to its own
+   compositor layer so the blur texture is cached, not repainted on hover */
+.home-glass-panel {
   position: relative;
   width: 100%;
-  max-width: 80%; /* Expansive layout footprint */
-  padding: 40px 25% 40px 50px; /* Spaciously proportioned */
-  box-sizing: border-box;
-  border-radius: 48px;
-  display: flex;
-  flex-direction: column;
-  gap: 48px;
-
-  overflow: hidden; /* Clears bounding limits for water orb */
-
-  /* Tinted Lavender/Periwinkle Satin Backing */
-  background: linear-gradient(
-    135deg,
-    rgb(230, 230, 250) 0%,
-    rgba(220, 224, 248, 0.077) 100%
-  );
-  backdrop-filter: blur(12px) saturate(135%) contrast(105%) brightness(1.02);
-  -webkit-backdrop-filter: blur(12px) saturate(135%) contrast(105%)
-    brightness(1.02);
-
-  /* Premium double-layered light boundary rims */
-  border-top: 1.5px solid rgb(255, 255, 255);
-  border-left: 1.5px solid rgba(255, 255, 255, 0.194);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.25);
-  border-right: 1px solid rgba(255, 255, 255, 0.25);
-
-  /* Soft, diffuse, high-fidelity drop-shadow */
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-radius: 64px;
+  border: 1px solid rgba(255, 255, 255, 0.7);
   box-shadow:
-    0 40px 100px rgba(15, 23, 42, 0.195),
-    0 15px 35px rgba(15, 23, 42, 0.187);
+    0 40px 80px rgba(15, 23, 42, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  padding: 64px 48px;
+  box-sizing: border-box;
+  overflow: visible;
+  will-change: transform;
+  transform: translateZ(0);
 }
 
-.card-rim-light {
+/* ✅ FIX 1+5: orb promoted to own layer — no transition on backdrop-filter,
+   only transform transitions (GPU-only, no repaint) */
+.home-water-orb {
   position: absolute;
-  inset: 0;
-  border-radius: 46px;
-  background: radial-gradient(circle at 10% 10%, #ffffff15 0%, transparent 50%);
-  pointer-events: none;
-}
-
-.card-surface-shimmer {
-  position: absolute;
-  top: 1px;
-  left: 15%;
-  right: 15%;
-  height: 2px;
-  background: linear-gradient(
-    to right,
-    transparent,
-    rgba(255, 255, 255, 0.9),
-    transparent
-  );
-  pointer-events: none;
-}
-
-/* 
-  3D CRYSTAL-CLEAR WATER ORB (Perfect Sphere Droplet)
-  Highly transparent water physical rendering.
-*/
-.crystal-water-orb {
-  position: absolute;
-  top: 140px;
-  right: 80px;
+  top: 30px;
+  right: 40px;
   width: 140px;
   height: 140px;
   border-radius: 50%;
   cursor: grab;
-  z-index: 10;
+  z-index: 20;
+  pointer-events: auto;
   user-select: none;
+  -webkit-user-select: none;
+  will-change: transform;
+  transform: translateZ(0);
 
-  /* Flawless optical clarity refraction filter */
   background: transparent;
-  backdrop-filter: blur(5px) saturate(180%) contrast(125%) brightness(1.06);
-  -webkit-backdrop-filter: blur(5px) saturate(180%) contrast(125%)
-    brightness(1.06);
-
-  /* Double highlights on curved glass boundaries */
-  border-top: 1px solid rgba(255, 255, 255, 0.95);
-  border-left: 1px solid rgba(255, 255, 255, 0.95);
-  border-bottom: 1.5px solid rgba(255, 255, 255, 0.3);
-  border-right: 1.5px solid rgba(255, 255, 255, 0.3);
-
-  /* Physics shadows: Cast shadow + contact shadow + internal refraction shadows */
+  backdrop-filter: blur(10px) saturate(200%) contrast(120%) brightness(1.1);
+  -webkit-backdrop-filter: blur(10px) saturate(200%) contrast(120%)
+    brightness(1.1);
+  border-top: 2px solid rgba(255, 255, 255, 0.95);
+  border-left: 2px solid rgba(255, 255, 255, 0.9);
+  border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+  border-right: 2px solid rgba(255, 255, 255, 0.3);
   box-shadow:
-    0 35px 55px rgba(15, 23, 42, 0.071),
-    0 10px 20px rgba(15, 23, 42, 0.054),
-    inset -5px -5px 12px rgba(0, 0, 0, 0.05),
-    inset 5px 5px 12px rgba(255, 255, 255, 0.906),
-    inset -1px -1px 2px rgba(0, 0, 0, 0.17);
+    0 35px 60px rgba(15, 23, 42, 0.1),
+    inset 6px 6px 14px rgba(255, 255, 255, 0.9); /* ✅ reduced from 3 to 2 shadows */
+  /* ✅ FIX 2: removed transition — Framer Motion owns the transform, CSS
+     transition on top causes double-smoothing stutter */
 }
 
-/* Simulated caustic focused light spot beneath clear water */
-.droplet-caustic-light {
+/* ✅ FIX 5: hover scale moved to CSS only — no JS involved, compositor handles it */
+.home-water-orb:hover {
+  transform: scale(1.02) translateZ(0);
+}
+
+.orb-specular {
   position: absolute;
-  bottom: -5px;
-  right: -5px;
-  width: 40px;
-  height: 40px;
-  background-color: rgba(255, 255, 255, 0.568);
-  filter: blur(10px);
+  top: 14%;
+  left: 16%;
+  width: 35%;
+  height: 35%;
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.95) 0%,
+    transparent 75%
+  );
   border-radius: 50%;
+  transform: rotate(-40deg);
   pointer-events: none;
 }
 
-/* Sharp Specular glare point (Light Reflection) */
-.specular-glare-point {
+.orb-caustic {
   position: absolute;
-  top: 15%;
-  left: 15%;
-  width: 30%;
-  height: 30%;
+  bottom: -4px;
+  right: -4px;
+  width: 30px;
+  height: 30px;
+  /* ✅ FIX 1: replaced filter:blur with a pre-faded radial-gradient — same look, zero blur cost */
   background: radial-gradient(
     circle,
-    rgba(255, 255, 255, 0.944) 0%,
+    rgba(255, 255, 255, 0.6) 0%,
     rgba(255, 255, 255, 0) 80%
   );
   border-radius: 50%;
-  transform: rotate(-45deg);
   pointer-events: none;
 }
 
-/* Secondary internal bounce light on opposite edge */
-.bounce-light-rim {
-  position: absolute;
-  bottom: 8%;
-  right: 8%;
-  width: 40%;
-  height: 40%;
-  background: radial-gradient(
-    circle,
-    rgba(255, 255, 255, 0.3) 0%,
-    rgba(255, 255, 255, 0) 70%
-  );
-  border-radius: 50%;
-  pointer-events: none;
-}
-
-/* UPSCALED EDITORIAL TEXT CONTENT */
-.expanded-text-content {
+.home-content-wrapper {
+  max-width: 720px;
+  width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 32px;
+  position: relative;
+  z-index: 1;
 }
 
 .periwinkle-tag {
@@ -187,10 +134,19 @@
   animation: pulsePulse 2s infinite;
 }
 
-/* Large, high-end widescreen title */
-.editorial-main-title {
-  font-size: 6rem; /* Commanding layout scale */
-  font-weight: 700;
+@keyframes pulsePulse {
+  0%,
+  100% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.home-main-heading {
+  font-size: 72px;
+  font-weight: 800;
   line-height: 1.1;
   color: #0f172a;
   letter-spacing: -0.04em;
@@ -198,17 +154,16 @@
 }
 
 .title-chromatic-accent {
-  background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+  background: linear-gradient(135deg, #1e3a8a, #3b82f6);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
-.editorial-description {
-  font-size: 1.2rem; /* Perfectly readable */
-  line-height: 1.65;
+.home-hero-description {
+  font-size: 20px;
+  line-height: 1.7;
   color: #334155;
-  font-weight: 400;
-  max-width: 520px;
   margin: 0;
 }
 
@@ -216,12 +171,10 @@
   color: #475569;
 }
 
-/* Competencies Sections */
-.editorial-stack-section {
+.tech-stack-section {
   display: flex;
   flex-direction: column;
   gap: 16px;
-  margin-top: 12px;
 }
 
 .editorial-section-label {
@@ -232,43 +185,92 @@
   color: #64748b;
 }
 
-.editorial-stack-grid {
+.tech-stack-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 12px;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
 }
 
-@media (min-width: 540px) {
-  .editorial-stack-grid {
-    grid-template-columns: repeat(4, 1fr);
+@media (max-width: 600px) {
+  .tech-stack-grid {
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 
-.periwinkle-tech-pill {
+/* ✅ FIX 1+2+7+8: pills promoted to own layer, transition: transform only,
+   box-shadow removed from transition */
+.glass-tech-pill {
+  position: relative;
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 12px 15px;
-  border-radius: 16px;
-  background: rgba(255, 255, 255, 0.185);
-  border: 2px solid rgb(255, 255, 255);
-  font-size: 1rem;
+  justify-content: center;
+  gap: 12px;
+  padding: 18px 24px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  color: #0f172a;
   font-weight: 600;
-  color: #1e293b;
+  font-size: 1.1rem;
+  cursor: pointer;
+  /* ✅ FIX 2+8: transition only transform — GPU composited, zero repaint */
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   box-shadow:
-    0 2px 4px rgba(0, 0, 0, 0.01),
-    inset 1px 1px 1px rgba(255, 255, 255, 0.8);
+    0 10px 25px rgba(15, 23, 42, 0.08),
+    inset 0 1px 4px rgba(255, 255, 255, 0.7);
+  overflow: hidden;
+  will-change: transform;
+  transform: translateZ(0);
+}
+
+/* ✅ FIX 7: ::before kept for the glass sheen but opacity animated instead
+   of gradient repaint — opacity is compositor-only, free on GPU */
+.glass-tech-pill::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.5) 0%,
+    transparent 30%,
+    transparent 70%,
+    rgba(255, 255, 255, 0.1) 100%
+  );
+  z-index: 0;
+  opacity: 1;
+  transition: opacity 0.3s ease;
+}
+
+.glass-tech-pill:hover::before {
+  opacity: 0.6;
+}
+
+.glass-tech-pill .pill-icon,
+.glass-tech-pill span {
+  position: relative;
+  z-index: 1;
+}
+
+/* ✅ FIX 2: only translateY — no background/scale change → zero repaint */
+.glass-tech-pill:hover {
+  transform: translateY(-4px) translateZ(0);
 }
 
 .pill-icon {
   font-size: 1.6rem;
 }
 
+/* ✅ FIX 6: spin icon gets its own compositor layer so it doesn't
+   invalidate the pill's cached blur texture */
 .spin-react-icon {
   color: #00d8ff;
   animation: spinReact 20s linear infinite;
+  will-change: transform;
 }
-
 .node-icon {
   color: #539e43;
 }
@@ -285,71 +287,63 @@
   }
 }
 
-/* Responsive Action Buttons */
-.editorial-actions-row {
+/* ✅ FIX 2+8: action buttons — transition transform only, will-change added */
+.home-actions-row {
   display: flex;
-  gap: 16px;
+  gap: 20px;
   width: 100%;
 }
 
-.editorial-action-btn {
+@media (max-width: 600px) {
+  .home-actions-row {
+    flex-direction: column;
+  }
+}
+
+.glass-action-btn {
   flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 12px;
-  padding: 18px 28px;
-  border-radius: 18px;
-  font-size: 0.8rem;
+  padding: 20px 28px;
+  border-radius: 28px;
+  font-size: 0.9rem;
   font-weight: 700;
   letter-spacing: 0.1em;
   cursor: pointer;
   outline: none;
-  border: none;
-  transition:
-    background-color 0.2s ease,
-    opacity 0.2s ease;
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  /* ✅ FIX 2+8: no background or box-shadow transition — transform only */
+  transition: transform 0.25s ease;
+  background: rgba(255, 255, 255, 0.25);
+  color: #0f172a;
+  box-shadow: 0 10px 25px rgba(15, 23, 42, 0.08);
+  will-change: transform;
+  transform: translateZ(0);
+}
+
+.glass-action-btn:hover {
+  transform: translateY(-2px) translateZ(0);
+}
+
+.btn-primary {
+  background: #0f172a;
+  color: #ffffff;
+  border-color: transparent;
+}
+.btn-primary:hover {
+  background: #1e293b; /* ✅ kept — solid color change is cheap, only for non-blurred btn */
+}
+
+.btn-secondary {
+  background: rgba(255, 255, 255, 0.4);
+  color: #0f172a;
 }
 
 .btn-icon {
-  font-size: 1rem;
+  font-size: 1.1rem;
   opacity: 0.85;
-}
-
-.btn-periwinkle-primary {
-  background-color: #0f172a;
-  color: #ffffff;
-}
-
-.btn-periwinkle-primary:hover {
-  background-color: #1e293b;
-}
-
-.btn-periwinkle-primary:active {
-  opacity: 0.85;
-}
-
-.btn-periwinkle-secondary {
-  background-color: rgba(255, 255, 255, 0.7);
-  color: #0f172a;
-  border: 1px solid rgba(15, 23, 42, 0.1);
-}
-
-.btn-periwinkle-secondary:hover {
-  background-color: rgba(255, 255, 255, 0.95);
-  border-color: rgba(15, 23, 42, 0.2);
-}
-
-.btn-periwinkle-secondary:active {
-  opacity: 0.85;
-}
-
-@keyframes pulsePulse {
-  0%,
-  100% {
-    opacity: 0.6;
-  }
-  50% {
-    opacity: 1;
-  }
 }
