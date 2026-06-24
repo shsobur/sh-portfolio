@@ -1,0 +1,244 @@
+/* 100% Background width container */
+.footer-full-container {
+  position: relative;
+  width: 100%;
+  background: transparent;
+  overflow: hidden;
+  box-sizing: border-box;
+  border-top: 1.5px solid rgba(255, 255, 255, 0.8);
+}
+
+/* Soft sunrise glow at the bottom */
+.footer-horizon-glow {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    to top,
+    rgba(230, 230, 250, 0.7) 0%,
+    rgba(220, 224, 248, 0.1) 100%
+  );
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* 1536px centered widescreen canvas */
+.footer-inner-content {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 1536px;
+  margin: 0 auto;
+  padding: 80px 48px 40px 48px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 60px;
+}
+
+/* Main content grid */
+.footer-main-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 48px;
+}
+
+@media (min-width: 992px) {
+  .footer-main-grid {
+    grid-template-columns: 1.4fr 0.6fr 1fr;
+    gap: 64px;
+  }
+}
+
+.footer-column {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.column-label {
+  font-size: 13px; /* was 11px */
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #64748b;
+  margin: 0;
+}
+
+.manifesto-col {
+  padding-right: 24px;
+}
+
+.manifesto-heading {
+  font-size: 21px; /* was 19px */
+  font-weight: 700;
+  color: #0f172a;
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+
+.manifesto-quote {
+  font-size: 16.5px; /* was 14.5px */
+  line-height: 1.7;
+  color: #475569;
+  font-style: italic;
+  margin: 0;
+  max-width: 580px;
+}
+
+.footer-nav-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.footer-nav-list a {
+  font-size: 16.5px; /* was 14.5px */
+  font-weight: 600;
+  color: #334155;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.footer-nav-list a:hover {
+  color: #3b82f6;
+}
+
+.connect-col {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.direct-channels-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.direct-channel-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 16.5px; /* was 14.5px */
+  font-weight: 600;
+  color: #334155;
+  text-decoration: none;
+  width: fit-content;
+  transition: color 0.2s ease;
+}
+
+.direct-channel-link:hover {
+  color: #3b82f6;
+}
+
+.channel-icon {
+  font-size: 18px; /* was 16px */
+  color: #475569;
+  opacity: 0.8;
+}
+
+/* ----------------------------------------
+   3D Liquid-Glass Social Pills – Optimized
+   ---------------------------------------- */
+.social-pills-row {
+  display: flex;
+  gap: 12px;
+}
+
+.social-icon-pill {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+
+  background: radial-gradient(
+    circle at 30% 30%,
+    rgba(255, 255, 255, 0.7) 0%,
+    rgba(255, 255, 255, 0.15) 80%
+  );
+  border: 1.5px solid rgba(255, 255, 255, 0.7);
+  color: #334155;
+  font-size: 20px; /* was 18px (icon size) */
+  text-decoration: none;
+
+  box-shadow:
+    0 8px 20px -4px rgba(15, 23, 42, 0.08),
+    inset 1px 1px 2px rgba(255, 255, 255, 0.8);
+
+  transition:
+    transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+    color 0.2s ease,
+    background-color 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.social-icon-pill:hover {
+  transform: translateY(-2.5px);
+  color: #3b82f6;
+  background-color: rgba(255, 255, 255, 0.35);
+  box-shadow:
+    0 12px 24px -6px rgba(15, 23, 42, 0.12),
+    inset 1px 1px 2px rgba(255, 255, 255, 0.8);
+}
+
+/* ----------------------------------------
+   Bottom Metadata Bar
+   ---------------------------------------- */
+.footer-bottom-bar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-top: 32px;
+  border-top: 1px solid rgba(15, 23, 42, 0.08);
+  box-sizing: border-box;
+}
+
+@media (min-width: 768px) {
+  .footer-bottom-bar {
+    flex-direction: row;
+  }
+}
+
+.footer-copyright {
+  font-size: 15px; /* was 13px */
+  color: #64748b;
+  margin: 0;
+  font-weight: 500;
+}
+
+.footer-signature {
+  font-size: 15.5px; /* was 13.5px */
+  font-weight: 600;
+  color: #334155;
+}
+
+.heart-pulse-icon {
+  color: #ef4444;
+  display: inline-block;
+  animation: heartPulse 1.6s infinite;
+}
+
+.coffee-icon {
+  display: inline-block;
+}
+
+@keyframes heartPulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.15);
+  }
+}

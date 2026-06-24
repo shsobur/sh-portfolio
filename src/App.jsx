@@ -5,6 +5,8 @@ import Background from "./Components/Background/Background";
 import Home from "./Sections/Home/Home";
 import About from "./Sections/About/About";
 import Skills from "./Sections/Skills/Skills";
+import Contact from "./Sections/Contact/Contact";
+import Footer from "./Components/Footer/Footer";
 
 const App = () => {
   const lenisRef = useRef(null);
@@ -53,6 +55,18 @@ const App = () => {
           className="w-full min-h-screen flex items-center justify-center"
         >
           <Skills />
+        </section>
+        <section
+          id="contact"
+          className="w-full min-h-screen flex items-center justify-center"
+        >
+          <Contact />
+        </section>
+        <section
+          id="footer"
+          className="w-full flex items-end justify-center"
+        >
+          <Footer />
         </section>
       </main>
     </div>
