@@ -1,11 +1,9 @@
 import "./About.css";
-import { useRef, useLayoutEffect } from "react";
+import { useRef } from "react";
 import { motion } from "framer-motion";
 
 const About = () => {
   const panelRef = useRef(null);
-
-  useLayoutEffect(() => {}, []);
 
   return (
     <div className="about-viewport">
@@ -36,29 +34,30 @@ const About = () => {
         <div className="hero-section">
           <div className="portrait-orb">
             <img
-              src="https://res.cloudinary.com/dmfsmcy2y/image/upload/v1782060475/me_vx6ccr.webp"
+              src="https://res.cloudinary.com/dmfsmcy2y/image/upload/v1782126360/me-Photoroom_uhtccw.webp"
               alt="Sobur Hossen"
               className="portrait-img"
               loading="lazy"
               decoding="async"
+              width="430"
+              height="430"
             />
             <div className="orb-inner-glow" />
             <div className="portrait-spin-ring" />
           </div>
-
           <div className="hero-text">
             <div className="name-block">
               <span className="bio-label">MERN Stack Developer</span>
               <h3 className="bio-name">Sobur Hossen</h3>
             </div>
             <p className="hero-desc">
-              I'm a passionate front-end developer with solid skills in HTML5,
+              I'm a passionate front‑end developer with solid skills in HTML5,
               CSS3, JavaScript, and React.js.
             </p>
             <p className="hero-desc">
-              In addition to my front-end expertise, I have foundational
+              In addition to my front‑end expertise, I have foundational
               knowledge of Express.js, Node.js, and MongoDB, and I'm actively
-              expanding my backend development skills to become a well-rounded
+              expanding my backend development skills to become a well‑rounded
               MERN Stack developer.
             </p>
             <p className="hero-motivation">
@@ -82,7 +81,6 @@ const About = () => {
                 Programming Hero MERN Stack Development Course.
               </p>
             </div>
-
             <div className="timeline-slab" data-accent="purple">
               <div className="slab-header">
                 <span className="slab-icon">🎓</span>
@@ -95,11 +93,10 @@ const About = () => {
                 Express, MongoDB, and built several course‑based projects.
               </p>
             </div>
-
             <div className="timeline-slab" data-accent="teal">
               <div className="slab-header">
                 <span className="slab-icon">🛠️</span>
-                <span className="slab-date">Jun – Dec 2024</span>
+                <span className="slab-date">Jun–Dec 2024</span>
               </div>
               <h4 className="slab-title">Personal Projects</h4>
               <p className="slab-subtitle">Hands‑On Practice</p>
@@ -108,11 +105,10 @@ const About = () => {
                 development skills and problem‑solving ability.
               </p>
             </div>
-
             <div className="timeline-slab slab-highlight" data-accent="orange">
               <div className="slab-header">
                 <span className="slab-icon">🚀</span>
-                <span className="slab-date">2025 – Present</span>
+                <span className="slab-date">2025–Present</span>
               </div>
               <h4 className="slab-title">Frontend Developer (MERN)</h4>
               <p className="slab-subtitle">Open to Work & Learning</p>

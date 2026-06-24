@@ -7,43 +7,44 @@ const Background = () => {
   const dropletsLayerRef = useRef(null);
 
   useEffect(() => {
+    if (window.matchMedia("(hover: none)").matches) return;
+
     let rafId = null;
-    let isScheduled = false; // ✅ FIX 1+7: throttle — only one RAF queued at a time
+    let isScheduled = false;
 
     const handleMouseMove = (e) => {
-      if (isScheduled) return; // ✅ FIX 7: skip if a frame is already pending
+      if (isScheduled) return;
       isScheduled = true;
 
-      const x = e.clientX / window.innerWidth - 0.5;
-      const y = e.clientY / window.innerHeight - 0.5;
+      const vw = window.innerWidth;
+      const vh = window.innerHeight;
+      const x = e.clientX / vw - 0.5;
+      const y = e.clientY / vh - 0.5;
 
       rafId = requestAnimationFrame(() => {
         if (gridLayerRef.current) {
-          gridLayerRef.current.style.transform = `translate(${x * -10}px, ${y * -10}px)`;
+          gridLayerRef.current.style.transform = `translate3d(${x * -10}px, ${y * -10}px, 0)`;
         }
         if (curvesLayerRef.current) {
-          curvesLayerRef.current.style.transform = `translate(${x * -25}px, ${y * -25}px)`;
+          curvesLayerRef.current.style.transform = `translate3d(${x * -25}px, ${y * -25}px, 0)`;
         }
         if (dropletsLayerRef.current) {
-          dropletsLayerRef.current.style.transform = `translate(${x * -50}px, ${y * -50}px)`;
+          dropletsLayerRef.current.style.transform = `translate3d(${x * -50}px, ${y * -50}px, 0)`;
         }
-        isScheduled = false; // ✅ FIX 7: allow next frame after this one runs
+        isScheduled = false;
       });
     };
 
-    window.addEventListener("mousemove", handleMouseMove, { passive: true }); // ✅ passive listener
+    window.addEventListener("mousemove", handleMouseMove);
     return () => {
       window.removeEventListener("mousemove", handleMouseMove);
-      if (rafId) cancelAnimationFrame(rafId); // ✅ FIX 1: cancel on unmount
+      if (rafId) cancelAnimationFrame(rafId);
     };
   }, []);
 
   return (
     <div className="parallax-bg-container">
-      {/* Layer 1: Base grid */}
       <div ref={gridLayerRef} className="parallax-layer grid-layer" />
-
-      {/* Layer 2: Animated curves + ambient glows */}
       <div ref={curvesLayerRef} className="parallax-layer curves-layer">
         <svg
           className="vertical-curves-svg"
@@ -61,9 +62,7 @@ const Background = () => {
               <stop offset="60%" stopColor="#10b981" stopOpacity="0.5" />
               <stop offset="100%" stopColor="#f59e0b" stopOpacity="0.7" />
             </linearGradient>
-            {/* ✅ FIX 3: removed SVG filter="url(#glow)" — replaced with CSS below */}
           </defs>
-
           <path
             d="M250 0C400 250,100 500,350 750C450 850,200 950,300 1080"
             fill="none"
@@ -81,8 +80,6 @@ const Background = () => {
             className="animated-path-2"
           />
         </svg>
-
-        {/* ✅ FIX 4: glows promoted to compositor layer */}
         <div
           className="ambient-glow glow-blue"
           style={{ top: "20%", left: "15%" }}
@@ -92,8 +89,6 @@ const Background = () => {
           style={{ bottom: "25%", right: "15%" }}
         />
       </div>
-
-      {/* Layer 3: Crystal droplets — backdrop-filter kept, but now GPU-promoted */}
       <div ref={dropletsLayerRef} className="parallax-layer droplets-layer">
         <div
           className="crystal-droplet lens-droplet-1"

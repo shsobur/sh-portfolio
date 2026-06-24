@@ -1,4 +1,3 @@
-/* ── Viewport ── */
 .about-viewport {
   width: 100%;
   min-height: 100vh;
@@ -12,7 +11,6 @@
   gap: 40px;
 }
 
-/* ── Section Title ── */
 .section-title-wrapper {
   display: flex;
   flex-direction: column;
@@ -31,8 +29,6 @@
   color: #475569;
 }
 
-/* ✅ FIX 6 + ENHANCE: replaced glow box-shadow (paint layer) with a
-   CSS shimmer sweep — GPU opacity/transform only, no repaint */
 .title-badge-line {
   width: 50px;
   height: 3px;
@@ -82,9 +78,6 @@
   margin: 0;
 }
 
-/* ✅ FIX 7: .section-title-shimmer removed entirely */
-
-/* ── Main Glass Panel ── */
 .liquid-glass-panel {
   position: relative;
   width: 100%;
@@ -99,12 +92,8 @@
   padding: 64px 48px;
   box-sizing: border-box;
   overflow: visible;
-  /* ✅ FIX 8: promote panel to GPU compositor layer */
-  will-change: transform;
-  transform: translateZ(0);
 }
 
-/* ── Draggable Orb ── */
 .draggable-water-orb {
   position: absolute;
   top: 30px;
@@ -118,12 +107,12 @@
   user-select: none;
   -webkit-user-select: none;
   will-change: transform;
-  transform: translateZ(0);
-
-  background: transparent;
-  backdrop-filter: blur(10px) saturate(200%) contrast(120%) brightness(1.1);
-  -webkit-backdrop-filter: blur(10px) saturate(200%) contrast(120%)
-    brightness(1.1);
+  background: radial-gradient(
+    circle at 30% 30%,
+    rgba(255, 255, 255, 0.75) 0%,
+    rgba(255, 255, 255, 0.25) 50%,
+    rgba(59, 130, 246, 0.15) 100%
+  );
   border-top: 2px solid rgba(255, 255, 255, 0.95);
   border-left: 2px solid rgba(255, 255, 255, 0.9);
   border-bottom: 2px solid rgba(255, 255, 255, 0.3);
@@ -131,11 +120,10 @@
   box-shadow:
     0 35px 60px rgba(15, 23, 42, 0.1),
     inset 6px 6px 14px rgba(255, 255, 255, 0.9);
-  /* ✅ FIX 4: removed transition — Framer owns the transform */
 }
 
 .draggable-water-orb:hover {
-  transform: scale(1.02) translateZ(0);
+  transform: scale(1.02);
 }
 
 .orb-specular {
@@ -154,7 +142,6 @@
   pointer-events: none;
 }
 
-/* ✅ FIX 5: filter:blur removed, replaced with pre-faded radial-gradient */
 .orb-caustic {
   position: absolute;
   bottom: -4px;
@@ -170,14 +157,12 @@
   pointer-events: none;
 }
 
-/* ── Hero Section ── */
 .hero-section {
   display: flex;
   gap: 64px;
   align-items: center;
   margin-bottom: 80px;
 }
-
 @media (max-width: 900px) {
   .hero-section {
     flex-direction: column;
@@ -186,13 +171,10 @@
   }
 }
 
-/* ✅ FIX 2 + ENHANCE: backdrop-filter removed from portrait-orb.
-   Replaced with a solid glass border. Added float animation — GPU only.
-   Visual result: cleaner, lighter, subtly alive. */
 .portrait-orb {
   position: relative;
-  width: 420px;
-  height: 420px;
+  width: 430px;
+  height: 430px;
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.15);
   border: 2.5px solid rgba(255, 255, 255, 0.9);
@@ -202,22 +184,19 @@
     0 30px 60px rgba(15, 23, 42, 0.12),
     inset 0 8px 20px rgba(255, 255, 255, 0.6);
   will-change: transform;
-  transform: translateZ(0);
-  /* ✅ ENHANCE: gentle float — pure transform, GPU only, zero repaint */
   animation: portraitFloat 6s ease-in-out infinite;
 }
 
 @keyframes portraitFloat {
   0%,
   100% {
-    transform: translateY(0px) translateZ(0);
+    transform: translateY(0px);
   }
   50% {
-    transform: translateY(-10px) translateZ(0);
+    transform: translateY(-10px);
   }
 }
 
-/* ✅ ENHANCE: dashed rotating ring around portrait — GPU transform only */
 .portrait-spin-ring {
   position: absolute;
   inset: -10px;
@@ -237,7 +216,7 @@
 .portrait-img {
   width: 100%;
   height: 100%;
-  margin-top: 30px;
+  margin-top: 0;
   object-fit: cover;
   display: block;
 }
@@ -290,7 +269,7 @@
   padding: 10px;
   margin-right: 200px;
   border-radius: 8px;
-  border-left: 2px solid rgb(255, 255, 255)
+  border-left: 2px solid rgb(255, 255, 255);
 }
 
 .hero-motivation {
@@ -300,7 +279,6 @@
   margin: 0;
 }
 
-/* ── Timeline ── */
 .timeline-section {
   display: flex;
   flex-direction: column;
@@ -319,7 +297,6 @@
   grid-template-columns: repeat(4, 1fr);
   gap: 24px;
 }
-
 @media (max-width: 1100px) {
   .timeline-grid {
     grid-template-columns: repeat(2, 1fr);
@@ -331,13 +308,9 @@
   }
 }
 
-/* ✅ FIX 1+4+8 + ENHANCE: backdrop-filter kept but GPU promoted.
-   transition: transform only. background/box-shadow NOT transitioned.
-   Left accent bar grows on hover via scaleY — GPU only, zero repaint. */
 .timeline-slab {
   background: rgba(255, 255, 255, 0.25);
-  backdrop-filter: blur(12px) saturate(160%);
-  -webkit-backdrop-filter: blur(12px) saturate(160%);
+  /* backdrop-filter removed */
   border-radius: 40px;
   padding: 32px 28px;
   border: 1px solid rgba(255, 255, 255, 0.8);
@@ -350,14 +323,9 @@
   cursor: pointer;
   position: relative;
   overflow: hidden;
-  /* ✅ FIX 4: transform only — GPU composited */
   transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-  will-change: transform;
-  transform: translateZ(0);
 }
 
-/* ✅ ENHANCE: colored left accent bar, grows from bottom on hover.
-   scaleY is GPU-only — zero repaint */
 .timeline-slab::before {
   content: "";
   position: absolute;
@@ -374,8 +342,6 @@
 .timeline-slab:hover::before {
   transform: scaleY(1);
 }
-
-/* accent colors per slab via data attribute */
 .timeline-slab[data-accent="blue"]::before {
   background: #3b82f6;
 }
@@ -390,7 +356,7 @@
 }
 
 .timeline-slab:hover {
-  transform: translateY(-4px) translateZ(0);
+  transform: translateY(-4px);
 }
 
 .slab-highlight {
@@ -403,11 +369,9 @@
   align-items: center;
   gap: 10px;
 }
-
 .slab-icon {
   font-size: 24px;
 }
-
 .slab-date {
   font-size: 13px;
   font-weight: 700;
@@ -415,21 +379,18 @@
   text-transform: uppercase;
   color: #3b82f6;
 }
-
 .slab-title {
   font-size: 20px;
   font-weight: 700;
   color: #0f172a;
   margin: 0;
 }
-
 .slab-subtitle {
   font-size: 15px;
   font-weight: 600;
   color: #475569;
   margin: 0;
 }
-
 .slab-desc {
   font-size: 16px;
   line-height: 1.6;

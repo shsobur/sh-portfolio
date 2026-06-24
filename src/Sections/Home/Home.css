@@ -10,8 +10,6 @@
   justify-content: center;
 }
 
-/* ✅ FIX 1+2: will-change + translateZ promote the panel to its own
-   compositor layer so the blur texture is cached, not repainted on hover */
 .home-glass-panel {
   position: relative;
   width: 100%;
@@ -26,12 +24,8 @@
   padding: 64px 48px;
   box-sizing: border-box;
   overflow: visible;
-  will-change: transform;
-  transform: translateZ(0);
 }
 
-/* ✅ FIX 1+5: orb promoted to own layer — no transition on backdrop-filter,
-   only transform transitions (GPU-only, no repaint) */
 .home-water-orb {
   position: absolute;
   top: 30px;
@@ -45,26 +39,23 @@
   user-select: none;
   -webkit-user-select: none;
   will-change: transform;
-  transform: translateZ(0);
-
-  background: transparent;
-  backdrop-filter: blur(10px) saturate(200%) contrast(120%) brightness(1.1);
-  -webkit-backdrop-filter: blur(10px) saturate(200%) contrast(120%)
-    brightness(1.1);
+  background: radial-gradient(
+    circle at 30% 30%,
+    rgba(255, 255, 255, 0.75) 0%,
+    rgba(255, 255, 255, 0.25) 50%,
+    rgba(59, 130, 246, 0.15) 100%
+  );
   border-top: 2px solid rgba(255, 255, 255, 0.95);
   border-left: 2px solid rgba(255, 255, 255, 0.9);
   border-bottom: 2px solid rgba(255, 255, 255, 0.3);
   border-right: 2px solid rgba(255, 255, 255, 0.3);
   box-shadow:
     0 35px 60px rgba(15, 23, 42, 0.1),
-    inset 6px 6px 14px rgba(255, 255, 255, 0.9); /* ✅ reduced from 3 to 2 shadows */
-  /* ✅ FIX 2: removed transition — Framer Motion owns the transform, CSS
-     transition on top causes double-smoothing stutter */
+    inset 6px 6px 14px rgba(255, 255, 255, 0.9);
 }
 
-/* ✅ FIX 5: hover scale moved to CSS only — no JS involved, compositor handles it */
 .home-water-orb:hover {
-  transform: scale(1.02) translateZ(0);
+  transform: scale(1.02);
 }
 
 .orb-specular {
@@ -89,7 +80,6 @@
   right: -4px;
   width: 30px;
   height: 30px;
-  /* ✅ FIX 1: replaced filter:blur with a pre-faded radial-gradient — same look, zero blur cost */
   background: radial-gradient(
     circle,
     rgba(255, 255, 255, 0.6) 0%,
@@ -190,15 +180,12 @@
   grid-template-columns: repeat(4, 1fr);
   gap: 16px;
 }
-
 @media (max-width: 600px) {
   .tech-stack-grid {
     grid-template-columns: repeat(2, 1fr);
   }
 }
 
-/* ✅ FIX 1+2+7+8: pills promoted to own layer, transition: transform only,
-   box-shadow removed from transition */
 .glass-tech-pill {
   position: relative;
   display: flex;
@@ -208,25 +195,19 @@
   padding: 18px 24px;
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.25);
-  backdrop-filter: blur(12px) saturate(180%);
-  -webkit-backdrop-filter: blur(12px) saturate(180%);
   border: 1px solid rgba(255, 255, 255, 0.7);
   color: #0f172a;
   font-weight: 600;
   font-size: 1.1rem;
   cursor: pointer;
-  /* ✅ FIX 2+8: transition only transform — GPU composited, zero repaint */
   transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   box-shadow:
     0 10px 25px rgba(15, 23, 42, 0.08),
     inset 0 1px 4px rgba(255, 255, 255, 0.7);
   overflow: hidden;
   will-change: transform;
-  transform: translateZ(0);
 }
 
-/* ✅ FIX 7: ::before kept for the glass sheen but opacity animated instead
-   of gradient repaint — opacity is compositor-only, free on GPU */
 .glass-tech-pill::before {
   content: "";
   position: absolute;
@@ -255,22 +236,20 @@
   z-index: 1;
 }
 
-/* ✅ FIX 2: only translateY — no background/scale change → zero repaint */
 .glass-tech-pill:hover {
-  transform: translateY(-4px) translateZ(0);
+  transform: translateY(-4px);
 }
 
 .pill-icon {
   font-size: 1.6rem;
 }
 
-/* ✅ FIX 6: spin icon gets its own compositor layer so it doesn't
-   invalidate the pill's cached blur texture */
 .spin-react-icon {
   color: #00d8ff;
   animation: spinReact 20s linear infinite;
   will-change: transform;
 }
+
 .node-icon {
   color: #539e43;
 }
@@ -287,13 +266,11 @@
   }
 }
 
-/* ✅ FIX 2+8: action buttons — transition transform only, will-change added */
 .home-actions-row {
   display: flex;
   gap: 20px;
   width: 100%;
 }
-
 @media (max-width: 600px) {
   .home-actions-row {
     flex-direction: column;
@@ -314,19 +291,14 @@
   cursor: pointer;
   outline: none;
   border: 1px solid rgba(255, 255, 255, 0.8);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  /* ✅ FIX 2+8: no background or box-shadow transition — transform only */
   transition: transform 0.25s ease;
   background: rgba(255, 255, 255, 0.25);
   color: #0f172a;
   box-shadow: 0 10px 25px rgba(15, 23, 42, 0.08);
-  will-change: transform;
-  transform: translateZ(0);
 }
 
 .glass-action-btn:hover {
-  transform: translateY(-2px) translateZ(0);
+  transform: translateY(-2px);
 }
 
 .btn-primary {
@@ -335,7 +307,7 @@
   border-color: transparent;
 }
 .btn-primary:hover {
-  background: #1e293b; /* ✅ kept — solid color change is cheap, only for non-blurred btn */
+  background: #1e293b;
 }
 
 .btn-secondary {
