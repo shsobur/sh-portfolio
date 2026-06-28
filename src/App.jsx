@@ -64,7 +64,7 @@ const App = () => {
         </section>
         <section
           id="footer"
-          className="w-full flex items-end justify-center"
+          className="w-full lg:mt-[100px] md:mt-[80px] sm:mt-[50px] flex items-end justify-center"
         >
           <Footer />
         </section>
