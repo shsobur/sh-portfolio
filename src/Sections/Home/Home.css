@@ -15,7 +15,6 @@
   width: 100%;
   background: rgba(255, 255, 255, 0.2);
   backdrop-filter: blur(5px) saturate(180%) !important;
-  -webkit-backdrop-filter: blur(5px) saturate(180%) !important;
   border-radius: 64px;
   border: 1px solid rgba(255, 255, 255, 0.7);
   box-shadow:
